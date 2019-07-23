@@ -1,3 +1,5 @@
+# REF  https://github.com/ageron/handson-ml/
+
 from __future__ import division, print_function, unicode_literals
 
 # NumPy's ndarray provides a lot of convenient and optimized implementations of
@@ -187,7 +189,8 @@ plt.show()
 
 M0 = np.array([
     [10, 20, 30],
-    [40, 50, 60]
+    [40, 50, 60],
+    [70, 80, 90]
 ])
 print(M0.shape)
 
@@ -197,4 +200,90 @@ print(M0.shape)
 print(M0[1, :])
 print(M0[1:2, :])
 
+# math diagonal matrix and identity matrix
+print(np.diag([10, 50, 90]))
+print(np.diag(M0))
+
+print(np.eye(4))
+
+# math: Matrix multiplication .dot()
+# * operator performs elementwise multiplication, NOT a matrix multiplication
+
+print(M0[0:2, :].shape)
+print(M0[:, 0:2].shape)
+print(M0[0:2, :].dot(M0[:, 0:2]))
+
+try:
+    M0[0:2, :].dot(M0[0:2, :])
+except ValueError as e:
+    print("ValueError:", e)
+
+print(np.array_equal(M0, M0.dot(np.eye(3))))
+
+
+import sys
+print("Python version: {}.{}.{}".format(*sys.version_info))
+print("Numpy version:", np.version.version)
+
+# Uncomment the following line if your Python version is ≥3.5
+# and your NumPy version is ≥1.10:
+
+#A @ D
+print(M0[0:2, :] @ (M0[:, 0:2]))  # also work for vector dot
+
+# Math: Matrix transpose and multiplication properties, symmetric matrix
+# The product of a matrix by its transpose is always a symmetric matrix
+print(M0.T)
+print((M0[0:2, :].dot(M0[:, 0:2])).T)
+print(M0[:, 0:2].T.dot(M0[0:2, :].T))
+
+print(M0.dot(M0.T))
+
+print(np.array([vector1]).T)  # convert a row vector matrix to vertical vector matrix
+
+# Math: Inverse of matrix
+# Math: determinant
+# One of the main uses of the determinant is to determine whether a square matrix can be inversed or not:
+# if the determinant is equal to 0, then the matrix cannot be inversed (it is a singular matrix),
+# and if the determinant is not 0, then it can be inversed.
+
+try:
+    print(LA.inv(M0))
+except LA.LinAlgError as e:
+    print("LinAlgError:", e)
+
+print(LA.det(M0))
+
+# Math: Singular Value Decomposition
+# It turns out that any m*n matrix M can be decomposed into the dot product of three simple matrices:
+# m*m orthogonal matrix for rotation, m*n diagonal matrix for scaling & projecting, n*n orthogonal matrix for rotation
+
+F_shear = np.array([
+        [1, 1.5],
+        [0, 1]
+    ])
+
+U, S_diag, V_T = LA.svd(F_shear)
+
+print(np.array_equal(F_shear, np.around(U.dot(np.diag(S_diag)).dot(V_T), 1)))
+
+# Math: Eignevectors and eigenvalues
+# NumPy's eig function returns the list of unit eigenvectors and their corresponding eigenvalues for any square matrix.
+
+eigenvalues2, eigenvectors2 = LA.eig(F_shear)
+print(eigenvalues2) # [λ0, λ1, …]
+print(np.around(eigenvectors2, 1))
+
+# Math: Trace is the sum of the values on its main diagonal
+# have a useful geometric interpretation in the case of projection matrices
+# corresponds to the number of dimensions after projection
+
+D = np.array([
+        [100, 200, 300],
+        [ 10,  20,  30],
+        [  1,   2,   3],
+    ])
+print(np.trace(D))
+
+#              Matrix Plot    Geometric applications of matrix operations
 
